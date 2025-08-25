@@ -38,7 +38,10 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={isUserLoggedIn ? <Navigate to="/" /> : <Login />}
+        />
         <Route path="/signup" element={<Signup />} />
         <Route path="/courses" element={<Courses />} />
 
