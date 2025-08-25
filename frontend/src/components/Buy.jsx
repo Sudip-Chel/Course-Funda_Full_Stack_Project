@@ -35,12 +35,13 @@ function Buy() {
 
   // Auth check on mount; prevent redirect before check
   useEffect(() => {
-    if (!token || !user) {
+    if (!token) {
       navigate("/login");
     } else {
       setAuthChecked(true);
     }
-  }, [token, user, navigate]);
+  }, [token, navigate]);
+
 
   // Fetch course details only after authentication confirmed
   useEffect(() => {
@@ -112,6 +113,7 @@ function Buy() {
           name: user?.firstName || "User",
           email: user?.email || "",
         },
+
         theme: { color: "#3399cc" },
         modal: {
           ondismiss: () => {
