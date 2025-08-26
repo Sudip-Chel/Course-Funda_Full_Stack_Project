@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
+import { useAuth } from "../context/Authcontext";
 
 // Razorpay script loader
 const loadRazorpayScript = () =>
@@ -18,22 +19,13 @@ const loadRazorpayScript = () =>
 function Buy() {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const { user, token } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState(null);
   const [error, setError] = useState("");
-  const [authChecked, setAuthChecked] = useState(false); // To avoid redirecting before validation
+  const [authChecked, setAuthChecked] = useState(false);
 
-  // Get user and token safely
-  let user = null;
-  try {
-    user = JSON.parse(localStorage.getItem("user"));
-  } catch {
-    user = null;
-  }
-  const token = localStorage.getItem("token");
-
-  // Auth check on mount; prevent redirect before check
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -42,8 +34,6 @@ function Buy() {
     }
   }, [token, navigate]);
 
-
-  // Fetch course details only after authentication confirmed
   useEffect(() => {
     if (!authChecked) return;
 
@@ -113,11 +103,10 @@ function Buy() {
           name: user?.firstName || "User",
           email: user?.email || "",
         },
-
         theme: { color: "#3399cc" },
         modal: {
           ondismiss: () => {
-            setLoading(false); // Enable button again if modal closed without payment
+            setLoading(false);
           },
         },
       };
@@ -136,7 +125,6 @@ function Buy() {
   };
 
   if (!authChecked) {
-    // Optionally show a loading spinner or nothing while checking auth
     return null;
   }
 
@@ -169,7 +157,6 @@ function Buy() {
       <h1 className="text-2xl font-bold mb-6">Buy Course</h1>
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
         <div className="flex flex-col sm:flex-row">
-          {/* Left Side - Order Details */}
           <div className="w-full md:w-1/2">
             <h1 className="text-xl font-semibold underline">Order Details</h1>
             <div className="flex items-center mt-4 space-x-2">
@@ -181,7 +168,6 @@ function Buy() {
               <p className="text-red-500 font-bold">{course.title}</p>
             </div>
           </div>
-          {/* Right Side - Payment */}
           <div className="w-full md:w-1/2 flex justify-center items-center mt-6 sm:mt-0">
             <button
               onClick={handlePurchase}

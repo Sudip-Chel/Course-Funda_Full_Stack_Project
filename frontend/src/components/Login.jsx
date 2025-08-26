@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from "react";
 import logo from "../../public/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import { BACKEND_URL } from '../utils/utils';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { BACKEND_URL } from "../utils/utils";
+import { AuthContext } from "../context/Authcontext"; // Update import
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,8 +26,7 @@ export default function Login() {
         }
       );
       toast.success(response.data.message);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("token", response.data.token);
+      login(response.data.user, response.data.token);
       navigate("/");
     } catch (error) {
       if (error.response) {
@@ -44,19 +45,25 @@ export default function Login() {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-red-100 to-indigo-900'>
-      <div className='container mx-auto flex items-center justify-center py-10'>
+    <div className="min-h-screen bg-gradient-to-br from-red-100 to-indigo-900">
+      <div className="container mx-auto flex items-center justify-center py-10">
         {/* Header */}
-        <header className='absolute top-0 left-0 w-full flex justify-between items-center p-5'>
-          <div className='flex items-center space-x-2'>
-            <img src={logo} alt="CourseFunda logo" className='h-16 w-16 rounded-full' />
-            <h1 className='text-2xl text-indigo-950 font-bold'>CourseFunda</h1>
+        <header className="absolute top-0 left-0 w-full flex justify-between items-center p-5">
+          <div className="flex items-center space-x-2">
+            <img src={logo} alt="CourseFunda logo" className="h-16 w-16 rounded-full" />
+            <h1 className="text-2xl text-indigo-950 font-bold">CourseFunda</h1>
           </div>
-          <div className='space-x-4'>
-            <Link to={"/signup"} className="px-4 py-2 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition">
+          <div className="space-x-4">
+            <Link
+              to={"/signup"}
+              className="px-4 py-2 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition"
+            >
               Sign Up
             </Link>
-            <Link to={"/login"} className="px-4 py-2 bg-indigo-600 text-white border border-indigo-600 rounded hover:bg-transparent hover:text-black transition">
+            <Link
+              to={"/login"}
+              className="px-4 py-2 bg-indigo-600 text-white border border-indigo-600 rounded hover:bg-transparent hover:text-black transition"
+            >
               Login
             </Link>
           </div>
@@ -64,14 +71,16 @@ export default function Login() {
         {/* Login Form */}
         <div className="bg-white/80 p-8 rounded-xl shadow-xl w-full max-w-md mt-20">
           <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-            Welcome to <span className='text-indigo-950'>CourseFunda</span>
+            Welcome to <span className="text-indigo-950">CourseFunda</span>
           </h2>
           <p className="text-center text-gray-700 mb-6">
             Just Login And Start Your Journey!
           </p>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label htmlFor="email" className="text-gray-900 mb-2 block">Email</label>
+              <label htmlFor="email" className="text-gray-900 mb-2 block">
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -86,7 +95,9 @@ export default function Login() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="password" className="text-gray-900 mb-2 block">Password</label>
+              <label htmlFor="password" className="text-gray-900 mb-2 block">
+                Password
+              </label>
               <input
                 type="password"
                 id="password"

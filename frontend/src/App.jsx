@@ -14,12 +14,23 @@ import Dashboard from "./admin/Dashboard.jsx";
 import CourseCreate from "./admin/CourseCreate.jsx";
 import UpdateCourse from "./admin/UpdateCourse.jsx";
 import OurCourses from "./admin/OurCourses.jsx";
-
+import { AuthProvider } from "./context/Authcontext.jsx";
+import {useContext} from "react";
 import { Toaster } from "react-hot-toast";
+import { AuthContext } from "./context/Authcontext.jsx";
 
 // ProtectedRoute component
-const ProtectedRoute = ({ isAllowed, redirectPath = "/login", children }) => {
-  if (!isAllowed) {
+// const ProtectedRoute = ({ isAllowed, redirectPath = "/login", children }) => {
+//   if (!isAllowed) {
+//     return <Navigate to={redirectPath} replace />;
+//   }
+//   return children ? children : <Outlet />;
+// };
+
+const ProtectedRoute = ({ redirectPath = "/login", children }) => {
+  const { user, token } = useContext(AuthContext);
+
+  if (!user || !token) {
     return <Navigate to={redirectPath} replace />;
   }
   return children ? children : <Outlet />;
@@ -34,6 +45,7 @@ function App() {
 
   return (
     <div>
+      <AuthProvider>
       <Toaster position="top-right" />
       <Routes>
         {/* Public routes */}
@@ -72,6 +84,7 @@ function App() {
         {/* Fallback route for 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </AuthProvider>
     </div>
   );
 }
