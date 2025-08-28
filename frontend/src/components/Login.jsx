@@ -44,40 +44,44 @@ export default function Login() {
     }
   };
 
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-100 to-indigo-900">
-      <div className="container mx-auto flex items-center justify-center py-10">
+    <div className="min-h-screen bg-gradient-to-br from-red-100 to-indigo-900 flex flex-col">
+      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
         {/* Header */}
-        <header className="absolute top-0 left-0 w-full flex justify-between items-center p-5">
+        <header className="flex items-center justify-between w-full max-w-7xl mx-auto">
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="CourseFunda logo" className="h-16 w-16 rounded-full" />
-            <h1 className="text-2xl text-indigo-950 font-bold">CourseFunda</h1>
+            <img src={logo} alt="CourseFunda logo" className="h-12 w-12 sm:h-20 sm:w-20 rounded-full" />
+            <h1 className="text-xl sm:text-2xl text-indigo-950 font-bold">CourseFunda</h1>
           </div>
-          <div className="space-x-4">
+          <div className="flex items-center space-x-2">
             <Link
-              to={"/signup"}
-              className="px-4 py-2 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition"
+              to="/signup"
+              className="px-4 py-2 sm:px-6 sm:py-3 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white text-base sm:text-lg"
             >
               Sign Up
             </Link>
             <Link
-              to={"/login"}
-              className="px-4 py-2 bg-indigo-600 text-white border border-indigo-600 rounded hover:bg-transparent hover:text-black transition"
+              to="/"
+              className="px-4 py-2 sm:px-6 sm:py-3 border bg-indigo-600 text-white border-indigo-600 rounded hover:bg-transparent hover:text-black text-base sm:text-lg"
             >
-              Login
+              Join
             </Link>
           </div>
         </header>
-        {/* Login Form */}
-        <div className="bg-white/80 p-8 rounded-xl shadow-xl w-full max-w-md mt-20">
+      </div>
+
+      {/* Main Login Form Centered */}
+      <main className="flex-grow flex items-center justify-center px-4">
+        <div className="bg-white/80 p-8 rounded-xl shadow-xl w-full max-w-md mt-12 sm:mt-20">
           <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
             Welcome to <span className="text-indigo-950">CourseFunda</span>
           </h2>
           <p className="text-center text-gray-700 mb-6">
             Just Login And Start Your Journey!
           </p>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
               <label htmlFor="email" className="text-gray-900 mb-2 block">
                 Email
               </label>
@@ -94,7 +98,8 @@ export default function Login() {
                 aria-label="Email"
               />
             </div>
-            <div className="mb-4">
+
+            <div>
               <label htmlFor="password" className="text-gray-900 mb-2 block">
                 Password
               </label>
@@ -111,11 +116,13 @@ export default function Login() {
                 aria-label="Password"
               />
             </div>
+
             {errorMessage && (
-              <div className="mb-4 text-red-600 text-sm whitespace-pre-line text-center">
+              <div className="text-red-600 text-sm whitespace-pre-line text-center">
                 {errorMessage}
               </div>
             )}
+
             <button
               type="submit"
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-md transition"
@@ -124,7 +131,7 @@ export default function Login() {
             </button>
           </form>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import logo from "../../public/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import { BACKEND_URL } from '../utils/utils';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { BACKEND_URL } from "../utils/utils";
 
 export default function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -44,30 +44,54 @@ export default function Signup() {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-red-100 to-indigo-900'>
-      <div className='container mx-auto flex items-center justify-center py-10'>
+    <div className="min-h-screen bg-gradient-to-br from-red-100 to-indigo-900 flex flex-col">
+      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
         {/* Header */}
-        <header className='absolute top-0 left-0 w-full flex justify-between items-center p-5'>
-          <div className='flex items-center space-x-2'>
-            <img src={logo} alt="CourseFunda logo" className='h-16 w-16 rounded-full' />
-            <h1 className='text-2xl text-indigo-950 font-bold'>CourseFunda</h1>
+        <header className="flex items-center justify-between w-full max-w-7xl mx-auto">
+          <div className="flex items-center space-x-2">
+            <img
+              src={logo}
+              alt="CourseFunda logo"
+              className="h-12 w-12 sm:h-20 sm:w-20 rounded-full"
+            />
+            <h1 className="text-xl sm:text-2xl text-indigo-950 font-bold">
+              CourseFunda
+            </h1>
           </div>
-          <div className='space-x-4'>
-            <Link to={"/login"} className="px-4 py-2 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition">Login</Link>
-            <Link to={"/"} className="px-4 py-2 bg-indigo-600 text-white border border-indigo-600 rounded hover:bg-transparent hover:text-black transition">Join Now</Link>
+          <div className="flex items-center space-x-2">
+            <Link
+              to="/login"
+              className="px-4 py-2 sm:px-6 sm:py-3 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white text-base sm:text-lg"
+            >
+              Login
+            </Link>
+            <Link
+              to="/"
+              className="px-4 py-2 sm:px-6 sm:py-3 border bg-indigo-600 text-white border-indigo-600 rounded hover:bg-transparent hover:text-black text-base sm:text-lg"
+            >
+              Join
+            </Link>
           </div>
         </header>
-        {/* Signup Form */}
-        <div className="bg-white/80 p-8 rounded-xl shadow-xl w-full max-w-md mt-20">
+      </div>
+
+      {/* Signup Form Centered */}
+      <main className="flex-grow flex items-center justify-center px-4">
+        <div className="bg-white/80 p-8 rounded-xl shadow-xl w-full max-w-md mt-12 sm:mt-20">
           <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-            Welcome to <span className='text-indigo-950'>CourseFunda</span>
+            Welcome to <span className="text-indigo-950">CourseFunda</span>
           </h2>
           <p className="text-center text-gray-700 mb-6">
             Just Signup To Join Us!
           </p>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="firstname" className="text-gray-900 mb-2 block">First Name</label>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="firstname"
+                className="text-gray-900 mb-2 block"
+              >
+                First Name
+              </label>
               <input
                 type="text"
                 id="firstname"
@@ -81,8 +105,14 @@ export default function Signup() {
                 aria-label="First Name"
               />
             </div>
-            <div className="mb-4">
-              <label htmlFor="lastname" className="text-gray-900 mb-2 block">Last Name</label>
+
+            <div>
+              <label
+                htmlFor="lastname"
+                className="text-gray-900 mb-2 block"
+              >
+                Last Name
+              </label>
               <input
                 type="text"
                 id="lastname"
@@ -96,8 +126,11 @@ export default function Signup() {
                 aria-label="Last Name"
               />
             </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="text-gray-900 mb-2 block">Email</label>
+
+            <div>
+              <label htmlFor="email" className="text-gray-900 mb-2 block">
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -111,8 +144,11 @@ export default function Signup() {
                 aria-label="Email"
               />
             </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="text-gray-900 mb-2 block">Password</label>
+
+            <div>
+              <label htmlFor="password" className="text-gray-900 mb-2 block">
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
@@ -126,11 +162,13 @@ export default function Signup() {
                 aria-label="Password"
               />
             </div>
+
             {errorMessage && (
-              <div className="mb-4 text-red-600 text-sm whitespace-pre-line text-center">
+              <div className="text-red-600 text-sm whitespace-pre-line text-center">
                 {errorMessage}
               </div>
             )}
+
             <button
               type="submit"
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-md transition"
@@ -139,7 +177,7 @@ export default function Signup() {
             </button>
           </form>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

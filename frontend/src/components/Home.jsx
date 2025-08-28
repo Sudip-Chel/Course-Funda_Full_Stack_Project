@@ -65,31 +65,33 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-red-100 to-indigo-900 overflow-x-hidden">
       <div className="text-black container mx-auto">
-        {/* Header */}
-        <header className="flex items-center justify-between p-6">
+        <header className="flex items-center justify-between px-4 py-4 sm:px-6">
+          {/* Left: Logo and Title in a row */}
           <div className="flex items-center space-x-2">
-            <img href="./" src={logo} alt="CourseFunda logo" className="h-20 w-20 rounded-full" />
-            <h1 className="text-2xl text-indigo-950 font-bold">CourseFunda</h1>
+            <img src={logo} alt="CourseFunda logo" className="h-12 w-12 sm:h-20 sm:w-20 rounded-full" />
+            <h1 className="text-xl sm:text-2xl text-indigo-950 font-bold">CourseFunda</h1>
           </div>
-          <div className="space-x-5">
+
+          {/* Right: Auth Buttons, always at far right */}
+          <div className="flex items-center space-x-2">
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="px-6 py-3 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white"
+                className="px-4 py-2 sm:px-6 sm:py-3 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white text-base sm:text-lg"
               >
                 Logout
               </button>
             ) : (
               <>
                 <Link
-                  to={"/login"}
-                  className="px-6 py-3 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white"
+                  to="/login"
+                  className="px-4 py-2 sm:px-6 sm:py-3 border border-indigo-600 rounded hover:bg-indigo-600 hover:text-white text-base sm:text-lg"
                 >
                   Login
                 </Link>
                 <Link
-                  to={"/signup"}
-                  className="px-6 py-3 border text-white bg-indigo-600 border-indigo-600 rounded hover:bg-transparent hover:text-black"
+                  to="/signup"
+                  className="px-4 py-2 sm:px-6 sm:py-3 border bg-indigo-600 text-white border-indigo-600 rounded hover:bg-transparent hover:text-black text-base sm:text-lg"
                 >
                   Sign Up
                 </Link>
@@ -97,6 +99,7 @@ export default function Home() {
             )}
           </div>
         </header>
+
         {/* Main Content */}
         <section className="text-center py-20">
           <h2 className="text-4xl font-bold text-center text-indigo-950 mt-10">Welcome to CourseFunda</h2>
