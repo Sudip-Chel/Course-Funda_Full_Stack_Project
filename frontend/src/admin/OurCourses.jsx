@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
+import { useAdminAuth } from "../context/AdminAuthContext.jsx";
 
 
 function OurCourses() {
@@ -10,13 +11,18 @@ function OurCourses() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const admin = JSON.parse(localStorage.getItem("admin"));
-  const token = admin.token;
+const { admin, token } = useAdminAuth();
 
-  if (!token) {
+
+useEffect(() => {
+  if (admin === null || token === null) {
+    // If admin/token is missing from context, redirect
     toast.error("Please login to admin");
     navigate("/admin/login");
   }
+}, [admin, token, navigate]);
+ 
+
 
   // fetch courses
   useEffect(() => {

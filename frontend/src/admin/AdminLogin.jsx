@@ -4,11 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BACKEND_URL } from "../utils/utils";
+import { useAdminAuth } from "../context/AdminAuthContext.jsx";
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { login } = useAdminAuth();
 
   const navigate = useNavigate();
 
@@ -16,24 +19,14 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   setErrorMessage(""); // Clear previous errors, if any
 
-  try {
-    const response = await axios.post(
-      `${BACKEND_URL}/admin/login`,
-      { email, password },
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-
-    // Ensure storage completes before navigation
-    localStorage.setItem("admin", JSON.stringify(response.data));
+   try {
+    const response = await axios.post(`${BACKEND_URL}/admin/login`, {email, password}, {withCredentials:true});
+    
+    login(response.data.admin, response.data.token);  // update context, localStorage
 
     toast.success(response.data.message);
-
-    // Navigate after setting localStorage
     navigate("/admin/dashboard", { replace: true });
-  } catch (error) {
+  }  catch (error) {
     if (error.response) {
       setErrorMessage(error.response.data.errors || "Login failed");
     } else {

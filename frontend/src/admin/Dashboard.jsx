@@ -4,6 +4,8 @@ import logo from "../../public/logo.png";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { BACKEND_URL } from "../utils/utils";
+import { useAuth } from "../context/Authcontext.jsx";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const handleLogout = async () => {
@@ -18,6 +20,8 @@ function Dashboard() {
       toast.error(error.response.data.errors || "Error in logging out");
     }
   };
+
+
   return (
     <div className=" bg-gradient-to-br from-red-100 to-indigo-400 flex h-screen">
       {/* Sidebar */}

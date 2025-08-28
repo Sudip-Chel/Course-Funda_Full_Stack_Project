@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import logo from "../../public/logo.png";
 import { BACKEND_URL } from "../utils/utils";
+import { useAdminAuth } from "../context/AdminAuthContext.jsx";
 
 function UpdateCourse() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ function UpdateCourse() {
   const [image, setImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(true);
+  const { admin, token } = useAdminAuth();
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -71,8 +73,8 @@ function UpdateCourse() {
     if (image) {
       formData.append("imageUrl", image);
     }
-    const admin = JSON.parse(localStorage.getItem("admin"));
-    const token = admin.token;
+   
+
     if (!token) {
       toast.error("Please login to admin");
       return;

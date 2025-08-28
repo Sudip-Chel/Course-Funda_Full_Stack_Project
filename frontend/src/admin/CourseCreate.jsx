@@ -5,6 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import logo from "../../public/logo.png";
 import { BACKEND_URL } from "../utils/utils";
+import { useAdminAuth } from "../context/AdminAuthContext.jsx";
+import { useEffect } from "react";
+
+
+
+
+
 
 function CourseCreate() {
   const [title, setTitle] = useState("");
@@ -12,6 +19,7 @@ function CourseCreate() {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
+  const { admin, token, logout } = useAdminAuth();
 
   const navigate = useNavigate();
 
@@ -25,19 +33,33 @@ function CourseCreate() {
     };
   };
 
+
+  useEffect(() => {
+    if (!token) {
+      toast.error("Please login to admin");
+      navigate("/admin/login");
+    }
+  }, [token, navigate]);
+
+
+  useEffect(() => {
+    if (admin === null || token === null) {
+      // If admin/token is missing from context, redirect
+      toast.error("Please login to admin");
+      navigate("/admin/login");
+    }
+  }, [admin, token, navigate]);
+
   const handleLogout = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/admin/logout`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(`${BACKEND_URL}/admin/logout`, { withCredentials: true });
       toast.success(response.data.message);
-      localStorage.removeItem("admin");
+      logout();  // clear context & localStorage & redirect inside logout
     } catch (error) {
       console.log("Error in logging out ", error);
-      toast.error(error.response.data.errors || "Error in logging out");
+      toast.error(error.response?.data?.errors || "Error in logging out");
     }
   };
-
   const handleCreateCourse = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -46,12 +68,10 @@ function CourseCreate() {
     formData.append("price", price);
     formData.append("image", image);
 
-    const admin = JSON.parse(localStorage.getItem("admin"));
-    const token = admin.token;
-    if (!token) {
-      navigate("/admin/login");
-      return;
-    }
+
+
+
+
 
     try {
       const response = await axios.post(

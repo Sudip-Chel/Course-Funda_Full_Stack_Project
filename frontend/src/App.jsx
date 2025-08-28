@@ -14,78 +14,65 @@ import Dashboard from "./admin/Dashboard.jsx";
 import CourseCreate from "./admin/CourseCreate.jsx";
 import UpdateCourse from "./admin/UpdateCourse.jsx";
 import OurCourses from "./admin/OurCourses.jsx";
-import { AuthProvider } from "./context/Authcontext.jsx";
-import {useContext} from "react";
+
+import { AuthProvider, useAuth } from "./context/Authcontext.jsx";
+import { AdminAuthProvider, useAdminAuth } from "./context/AdminAuthContext.jsx";
 import { Toaster } from "react-hot-toast";
-import { AuthContext } from "./context/Authcontext.jsx";
 
-// ProtectedRoute component
-// const ProtectedRoute = ({ isAllowed, redirectPath = "/login", children }) => {
-//   if (!isAllowed) {
-//     return <Navigate to={redirectPath} replace />;
-//   }
-//   return children ? children : <Outlet />;
-// };
-
+// Protected route for user
 const ProtectedRoute = ({ redirectPath = "/login", children }) => {
-  const { user, token } = useContext(AuthContext);
-
+  const { user, token } = useAuth();
   if (!user || !token) {
     return <Navigate to={redirectPath} replace />;
   }
   return children ? children : <Outlet />;
 };
 
+// Protected route for admin
+const AdminProtectedRoute = ({ redirectPath = "/admin/login", children }) => {
+  const { admin, token } = useAdminAuth();
+  if (!admin || !token) {
+    return <Navigate to={redirectPath} replace />;
+  }
+  return children ? children : <Outlet />;
+};
+
 function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const admin = JSON.parse(localStorage.getItem("admin"));
-
-  const isUserLoggedIn = !!user;
-  const isAdminLoggedIn = !!admin;
-
   return (
-    <div>
-      <AuthProvider>
-      <Toaster position="top-right" />
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/login"
-          element={isUserLoggedIn ? <Navigate to="/" /> : <Login />}
-        />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/courses" element={<Courses />} />
+    <AuthProvider>
+      <AdminAuthProvider>
+        <Toaster position="top-right" />
+        <Routes>
+          {/* Public User Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/alumni" element={<PlacedAlumni />} />
 
-        {/* Protected User Routes */}
-        <Route
-          element={<ProtectedRoute isAllowed={isUserLoggedIn} />}
-        >
-          <Route path="/buy/:courseId" element={<Buy />} />
-          <Route path="/purchases" element={<Purchases />} />
-        </Route>
+          {/* Protected User Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/buy/:courseId" element={<Buy />} />
+            <Route path="/purchases" element={<Purchases />} />
+          </Route>
 
-        {/* Other public routes */}
-        <Route path="/alumni" element={<PlacedAlumni />} />
+          {/* Admin Auth Public */}
+          <Route path="/admin/signup" element={<AdminSignup />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* Admin Routes */}
-        <Route path="/admin/signup" element={<AdminSignup />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
+          {/* Protected Admin Routes */}
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/create-course" element={<CourseCreate />} />
+            <Route path="/admin/update-course/:id" element={<UpdateCourse />} />
+            <Route path="/admin/our-courses" element={<OurCourses />} />
+          </Route>
 
-        <Route
-          element={<ProtectedRoute isAllowed={isAdminLoggedIn} redirectPath="/admin/login" />}
-        >
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/create-course" element={<CourseCreate />} />
-          <Route path="/admin/update-course/:id" element={<UpdateCourse />} />
-          <Route path="/admin/our-courses" element={<OurCourses />} />
-        </Route>
-
-        {/* Fallback route for 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      </AuthProvider>
-    </div>
+          {/* Fallback for unmatched routes */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AdminAuthProvider>
+    </AuthProvider>
   );
 }
 
