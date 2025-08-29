@@ -3,7 +3,6 @@ import axios from "axios";
 import { FaUserCircle, FaDiscourse } from "react-icons/fa";
 import { RiHome2Fill } from "react-icons/ri";
 import { FaDownload } from "react-icons/fa";
-import { IoMdSettings } from "react-icons/io";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { HiMenu, HiX } from "react-icons/hi";
@@ -13,22 +12,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
 import { useAuth } from "../context/Authcontext";
 
+
 function Courses() {
   const [courses, setCourses] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { token, logout, user } = useAuth();
 
   const navigate = useNavigate();
 
-  // Check token on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    // You can remove isLoggedIn state, it's not used for rendering
   }, []);
 
-  // Fetch courses on mount
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -44,13 +42,11 @@ function Courses() {
     fetchCourses();
   }, []);
 
-  // Logout function
   const handleLogout = async () => {
     try {
       await axios.get(`${BACKEND_URL}/user/logout`, { withCredentials: true });
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      setIsLoggedIn(false);
       toast.success("Logged out");
       navigate("/");
     } catch (error) {
@@ -58,73 +54,80 @@ function Courses() {
     }
   };
 
-  // Toggle sidebar for mobile
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Filter courses by search term
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="flex bg-red-50">
+    <div className="flex bg-red-50 min-h-screen">
       {/* Sidebar */}
-            <div
-              className={`fixed inset-y-0 left-0 bg-gray-100 border-r border-gray-200 p-5 transform ${
-                isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-              } md:translate-x-0 transition-transform duration-300 ease-in-out w-64 z-50`}
-            >
-              <nav>
-                <ul className="mt-12 md:mt-0 text-base">
-                  <li className="mb-4">
-                    <Link to="/" className="flex items-center font-semibold hover:text-indigo-700">
-                      <RiHome2Fill className="mr-2" /> Home
-                    </Link>
-                  </li>
-                  <li className="mb-4">
-                    <Link to="/courses" className="flex items-center font-semibold text-blue-500 hover:text-indigo-700">
-                      <FaDiscourse className="mr-2" /> Courses
-                    </Link>
-                  </li>
-                  <li className="mb-4">
-                    <Link to="/purchases" className="flex items-center hover:text-indigo-700 font-bold">
-                      <FaDownload className="mr-2" /> Purchases
-                    </Link>
-                  </li>
-                  
-                  <li>
-                    {user ? (
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center text-red-600 mt-4 hover:underline"
-                      >
-                        <IoLogOut className="mr-2" /> Logout
-                      </button>
-                    ) : (
-                      <Link to="/login" className="flex items-center mt-4 text-indigo-600 hover:underline">
-                        <IoLogIn className="mr-2" /> Login
-                      </Link>
-                    )}
-                  </li>
-                </ul>
-              </nav>
-            </div>
-      
-            {/* Sidebar Toggle Button (Mobile) */}
-            <button
-              className="fixed top-4 left-4 z-50 md:hidden bg-indigo-600 text-white p-2 rounded-lg shadow-md"
-              onClick={toggleSidebar}
-              aria-label="Toggle sidebar"
-            >
-              {isSidebarOpen ? <HiX className="text-2xl" /> : <HiMenu className="text-2xl" />}
-            </button>
+      <div
+        className={`fixed inset-y-0 left-0 bg-gray-100 border-r border-gray-200 p-5 transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 transition-transform duration-300 ease-in-out w-64 z-50`}
+      >
+        <nav>
+          <ul className="mt-12 md:mt-0 text-base">
+            <li className="mb-4">
+              <Link to="/" className="flex items-center font-semibold hover:text-indigo-700">
+                <RiHome2Fill className="mr-2" /> Home
+              </Link>
+            </li>
+            <li className="mb-4">
+              <Link to="/courses" className="flex items-center font-semibold text-blue-500 hover:text-indigo-700">
+                <FaDiscourse className="mr-2" /> Courses
+              </Link>
+            </li>
+            <li className="mb-4">
+              <Link to="/purchases" className="flex items-center hover:text-indigo-700 font-bold">
+                <FaDownload className="mr-2" /> Purchases
+              </Link>
+            </li>
+            <li>
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center text-red-600 mt-4 hover:underline"
+                >
+                  <IoLogOut className="mr-2" /> Logout
+                </button>
+              ) : (
+                <Link to="/login" className="flex items-center mt-4 text-indigo-600 hover:underline">
+                  <IoLogIn className="mr-2" /> Login
+                </Link>
+              )}
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      {/* Sidebar Toggle Button (Mobile) */}
+      <button
+        className="fixed top-4 left-4 z-50 md:hidden bg-indigo-600 text-white p-2 rounded-lg shadow-md"
+        onClick={toggleSidebar}
+        aria-label="Toggle sidebar"
+      >
+        {isSidebarOpen ? <HiX className="text-2xl" /> : <HiMenu className="text-2xl" />}
+      </button>
       {/* Main content */}
-      <main className="ml-0 md:ml-64 w-full bg-white p-10">
-        <header className="flex justify-between items-center mb-10">
+      <main className="ml-0 md:ml-64 w-full bg-white p-6 sm:p-8">
+        <header className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
           <h1 className="text-xl font-bold">Courses</h1>
           <div className="flex items-center space-x-3">
             <div className="flex items-center">
               <input
                 type="text"
                 placeholder="Type here to search..."
-                className="border border-gray-300 rounded-l-full px-4 py-2 h-10 focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 rounded-l-full px-4 py-2 h-10 focus:outline-none focus:ring-2 focus:ring-indigo-600"
               />
               <button className="h-10 border border-gray-300 rounded-r-full px-4 flex items-center justify-center">
                 <FiSearch className="text-xl text-gray-600" />
@@ -138,13 +141,11 @@ function Courses() {
         <div className="overflow-y-auto h-[80vh]">
           {loading ? (
             <p className="text-center text-gray-500">Loading...</p>
-          ) : courses.length === 0 ? (
-            <p className="text-center text-gray-500">
-              No course posted yet by admin
-            </p>
+          ) : filteredCourses.length === 0 ? (
+            <p className="text-center text-gray-500">No course found.</p>
           ) : (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {courses.map((course) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {filteredCourses.map((course) => (
                 <div
                   key={course._id}
                   className="border border-gray-200 rounded-lg p-4 shadow-sm"
